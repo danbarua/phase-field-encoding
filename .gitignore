@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Virtual environments
+.env/
+.venv/
+env/
+venv/
+
+# Data files
+/data/
+/datasets/
+/output/
+/results/
+/model/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+/.idea/
+/.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Jupyter Notebook metadata and checkpoints
+*.ipynb_checkpoints/
+*.ipynb_trash/
+
+# Test and logs
+*.log
+*.tmp
+*.bak
+
+# Machine Learning model files (adjust as needed)
+*.h5
+*.hdf5
+*.pb
+*.pt
+*.pkl
+*.joblib
