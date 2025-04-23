@@ -1,57 +1,6 @@
-# Ideas
+# Phase-Field Encoding
 
-- [ ] Port to TensorFlow (for TPU support)
-- [ ] Visualisations
-    - [ ] TensorBoard?
-
----
-
-# Phase Encoding - The Maths
-
-Here's a LaTeX representation of the mathematical function implemented in `encode_image()`:
-
-## Input:
-
-- $I$: Flattened image (a vector of pixel values)
-- $\omega_{active}$: Active frequency parameter
-- $x$: Spatial layout parameter (a vector)
-
-### Parameters:
-
-- $\theta_{thresh}$: Threshold phase (set to 0.0 in the code). When a Neuron's phase has rotated through $2\pi$ to $0$
-  we consider the Nueron has generated a Spike.
-- $\omega_{ref}$: Reference frequency
-- $n$ A constant (set to 4.0 in the code)
-- $\kappa$: A constant (set to $2\pi$ in the code)
-
-## Calculations:
-
-#### Initial Phase: $$\theta_{init} = I \cdot 2\pi$$
-
-#### Phase Difference: $$\Delta\theta = (\theta_{thresh} - \theta_{init} + 2\pi) \pmod{2\pi}$$
-
-#### Spike Time: $$t_{spike} = \frac{\Delta\theta}{\omega_{active}}$$
-
-#### Reference Phase: $$\theta_{ref} = \left(\frac{\omega_{ref} \cdot t_{spike} + \kappa \cdot x}{n}\right) \pmod{2\pi}$$
-
-#### Final Phase Difference: $$\phi = (\theta_{thresh} - \theta_{ref} + 2\pi) \pmod{2\pi}$$
-
-## Output:
-
-- Encoded image: $[\cos(\phi), \sin(\phi)]$ (a concatenated vector of cosine and sine of the final phase difference)
-
-### Formal Definition:
-
-$$ \text{encode_image}(I, \omega_{active}, x) = [\cos(\phi), \sin(\phi)] $$
-
-where
-
-$$ \phi = (\theta_{thresh} - \theta_{ref} + 2\pi) \pmod{2\pi} $$
-
-and $\theta_{ref}$ is calculated as described in the steps above.
-
-This definition encapsulates the mathematical operations performed by the `encode_image()` function, providing a concise
-and formal representation of the phase encoding process.
+Phase field encoding is a biologically-inspired method of converting input data (like images) into temporal spike patterns, similar to how biological neurons process information.
 
 ---
 
@@ -66,3 +15,28 @@ This simple Phase-encoder is inspired by the profound work of **Zoltan Nadasdy**
   Neuroscience. [https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2010.00051/full](https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2010.00051/full)
 - **Nadasdy, Z., et al.** (2022). *Phase coding of spatial representations in the human entorhinal cortex*. Science
   Advances. [https://www.science.org/doi/full/10.1126/sciadv.abm6081](https://www.science.org/doi/full/10.1126/sciadv.abm6081)
+
+---
+
+# Ideas
+
+- **Layerwise z tracking**:
+- [ ] Save encoded_img, x1, x2, logits at each stage of the model
+- [ ] Feed those into generate_phase_plot() to animate how samples evolve across the MLP
+
+- **Trainable ω and κ**:
+- [ ] Make `omega_active` and/or `kappa` learnable tensors (e.g. per-pixel, per-layer)
+- [ ] Backprop through the encoding step → adapt phase timing itself for better discriminative power
+
+- **Contrastive or metric learning**:
+- [ ] Use cosine distance between z representations to train in embedding space
+- Phase geometry lends itself naturally to angular margins or triplet losses
+
+- **Layered propagation in phase domain**:
+- [ ] Insert trainable complex-valued transforms between phase encoding and classification
+- [ ] Build a true stackable phase computing module, not just MLP on top
+
+Next Steps:
+- [ ] Track and export intermediate layer states (z) for visualization
+- [ ] Implement a learnable omega_active or spatial kappa
+- [ ] Try contrastive learning on phase geometry
